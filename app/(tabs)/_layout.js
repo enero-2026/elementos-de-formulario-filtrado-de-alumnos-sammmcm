@@ -24,6 +24,14 @@ export default function Layout() {
                 }}
             />
             <Tabs.Screen 
+                name="alumnos" 
+                options={{
+                    tabBarIcon: () => (
+                        <MaterialIcons name="class" size={24} color="black" />
+                    )
+                }} 
+            />
+            <Tabs.Screen 
                 name="config" 
                 options={{
                     tabBarIcon: () => (
@@ -36,14 +44,6 @@ export default function Layout() {
                 options={{
                     tabBarIcon: () => (
                         <AntDesign name="user" size={24} color={"black"} />
-                    )
-                }} 
-            />
-            <Tabs.Screen 
-                name="alumnos" 
-                options={{
-                    tabBarIcon: () => (
-                        <MaterialIcons name="class" size={24} color="black" />
                     )
                 }} 
             />

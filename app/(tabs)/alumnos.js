@@ -1,9 +1,20 @@
 import { Text, FlatList } from 'react-native';
 import { useEffect, useState } from 'react';
-import { List, TouchableRipple } from 'react-native-paper';
+import { List, TouchableRipple, TextInput } from 'react-native-paper';
 
 export default function Alumnos() {
     const [alumnos, setAlumnos] = useState([]);
+    const [buscaAlumno, setBuscarAlumno] = useState('');
+    const [ordenar, setOrdenar] = useState('apellido')
+    const alumnosFiltrados = alumnos
+          .filter((alumnos) => alumnos.nombre.toLowerCase().includes(buscaAlumno.toLowerCase()) || alumnos.matricula.includes(buscaAlumno))
+          .sort((alumnos, b) => {
+              if (ordenar === 'nombre') {
+                  return alumnos.nombre.split(' ')[2].localeCompare(b.nombre.split(' ')[2]);
+              } else {
+                  return alumnos.nombre.split(' ')[0].localeCompare(b.nombre.split(' ')[0]);
+              }
+          });
 
     useEffect(() => {
         setTimeout(() => {
@@ -63,18 +74,42 @@ export default function Alumnos() {
     }
 
     return (
-        <FlatList
-            data={alumnos}
-            keyExtractor={(item) => item.matricula.toString()}
-            renderItem={({ item }) => (
-                <TouchableRipple onPress={() => console.log(item.nombre)}>
+        <>
+            <TextInput
+                label="Ejemplo: Gael Garcia o 2156730"
+                value={buscaAlumno}
+                onChangeText={(alumnos) => setBuscarAlumno(alumnos)}
+                right={<TextInput.Icon icon="magnify"/>}
+            ></TextInput>
+
+            <List.Section title="">
+                <List.Accordion
+                    title="Ordenar"
+                    left={props => <List.Icon {...props} icon="sort" />}>
                     <List.Item
-                        title={item.nombre}
-                        description={`Matricula: ${item.matricula}`}
-                        left={props => <List.Icon {...props} icon="account" />}
-                    />
-                </TouchableRipple>
-            )}
-        />
+                        title="Por Nombre"
+                        left={props => <List.Icon {...props} icon="sort-alphabetical-ascending" />}
+                        onPress={() => setOrdenar('nombre')}/>
+                    <List.Item
+                        title="Por Apellido"
+                        left={props => <List.Icon {...props} icon="sort-alphabetical-ascending" />}
+                        onPress={() => setOrdenar('apellido')}/>
+                </List.Accordion>
+            </List.Section>
+
+            <FlatList
+                data={alumnosFiltrados}
+                keyExtractor={(item) => item.matricula.toString()}
+                renderItem={({ item }) => (
+                    <TouchableRipple onPress={() => console.log(item.nombre)}>
+                        <List.Item
+                            title={item.nombre}
+                            description={`Matricula: ${item.matricula}`}
+                            left={props => <List.Icon {...props} icon="account" />}
+                        />
+                    </TouchableRipple>
+                )}
+            />
+        </>
     );
 }
